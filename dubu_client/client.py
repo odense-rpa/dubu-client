@@ -106,10 +106,12 @@ class DubuClient:
             self._client.cookies = filtered_cookies
 
     def _normalize_url(self, endpoint: str) -> str:
-        """Ensure the URL is absolute, handling relative URLs."""
+        """Ensure the URL is absolute, handling relative URLs with /odata/ prefix."""
         if endpoint.startswith("http://") or endpoint.startswith("https://"):
             return endpoint
-        return urljoin(self._base_url, endpoint)
+        # Add /odata/ prefix for API endpoints
+        odata_base_url = urljoin(self._base_url, "odata/")
+        return urljoin(odata_base_url, endpoint)
 
     def get(self, endpoint: str, **kwargs) -> httpx.Response:
         """
