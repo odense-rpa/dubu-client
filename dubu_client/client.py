@@ -20,8 +20,11 @@ class DubuClient:
 
     def __init__(
         self,
-        username: str,
+        username: str|None,
     ) -> None:
+        if username is None:
+            raise ValueError("Username must be provided for DubuClient initialization")
+
         # Set up logging
         self.logger = logging.getLogger(__name__)
         logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -78,7 +81,7 @@ class DubuClient:
             ):
                 page.select_option(
                     DubuSelectors.Login.MUNICIPALITY_SELECT,
-                    label="RPA Odense Kommune (NIST)",
+                    label=self._username,
                 )
                 page.click(DubuSelectors.Login.OK_BUTTON)
             else:
