@@ -44,8 +44,6 @@ class DubuClient:
         )
         self.login()
 
-    # TODO: Figure out what happens with the tokens when multiple instances are created
-
     def login(self) -> None:
         with sync_playwright() as p:
             browser = p.chromium.launch(channel="chrome", headless=False)
