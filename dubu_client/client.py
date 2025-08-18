@@ -49,15 +49,13 @@ class DubuClient:
 
     def login(self) -> None:
         with sync_playwright() as p:
-            browser = p.chromium.launch(channel="chrome", headless=False)
-            context = browser.new_context(
-                viewport=None,  # No viewport constraint to allow maximization
+            browser = p.chromium.launch(channel="chrome", headless=True)
+            context = browser.new_context(                
                 storage_state=None,  # No stored state (similar to incognito)
                 accept_downloads=False,
                 ignore_https_errors=True,
             )
-            page = context.new_page()
-            page.set_viewport_size({"width": 1920, "height": 1080})
+            page = context.new_page()                        
             page.goto(self._base_url)
 
             try:
@@ -107,12 +105,11 @@ class DubuClient:
             self._client.cookies = filtered_cookies
 
     def _normalize_url(self, endpoint: str) -> str:
-        """Ensure the URL is absolute, handling relative URLs with /odata/ prefix."""
+        """Ensure the URL is absolute, handling relative URLs."""
         if endpoint.startswith("http://") or endpoint.startswith("https://"):
             return endpoint
-        # Add /odata/ prefix for API endpoints
-        odata_base_url = urljoin(self._base_url, "odata/")
-        return urljoin(odata_base_url, endpoint)
+        # For relative URLs, just join with base URL (caller should include /odata/ or /api/ as needed)
+        return urljoin(self._base_url, endpoint)
 
     def get(self, endpoint: str, **kwargs) -> httpx.Response:
         """
