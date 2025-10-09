@@ -65,3 +65,6 @@ def test_hent_sag(logged_in_client):
     assert result is not None, "Failed to retrieve sag"
     assert isinstance(result, dict), "Result should be a dictionary"
     assert result['id'] == 606094, "Retrieved sag ID does not match"
+
+
+

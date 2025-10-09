@@ -1,20 +1,9 @@
 import pytest
 import os
 
-from dubu_client.client import DubuClient
-from dubu_client.functionality.aktivitet import AktivitetClient
-from dubu_client.functionality.dokument import DokumentClient
 
-@pytest.fixture
-def logged_in_client():
-    """Fixture that provides a logged-in DubuClient for tests."""
-    login = os.getenv("DUBU_CLIENT")
-    client = DubuClient(login)
-    assert client._client.cookies, "Login failed - no cookies set after login"
-    return client
+def test_upload_dokument(dubu_manager: DubuClientManager):
 
-def test_upload_dokument(logged_in_client):
-    client = logged_in_client
     aktivitet_client = AktivitetClient(client)
     dokument_client = DokumentClient(client)
 

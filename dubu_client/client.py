@@ -20,11 +20,9 @@ class DubuClient:
 
     def __init__(
         self,
-        username: str|None,
+        username: str,
+        idp: str
     ) -> None:
-        if username is None:
-            raise ValueError("Username must be provided for DubuClient initialization")
-
         # Set up logging
         self.logger = logging.getLogger(__name__)
         logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -32,9 +30,10 @@ class DubuClient:
 
         # Create response logging hook
         response_hook = create_response_logging_hook(logger=self.logger)
-        hooks = {'response': [response_hook]}
+        hooks = {"response": [response_hook]}
 
         self._username = username
+        self._idp = idp
         self._base_url = "https://www.dubu.dk/"
         self._timeout = 30
         self._client = httpx.Client(
@@ -50,43 +49,31 @@ class DubuClient:
     def login(self) -> None:
         with sync_playwright() as p:
             browser = p.chromium.launch(channel="chrome", headless=True)
-            context = browser.new_context(                
+            context = browser.new_context(
                 storage_state=None,  # No stored state (similar to incognito)
                 accept_downloads=False,
                 ignore_https_errors=True,
+
             )
-            page = context.new_page()                        
+            page = context.new_page()
             page.goto(self._base_url)
 
             try:
-                page.wait_for_selector(DubuSelectors.Login.USERNAME, timeout=5000)
-            except Exception:
-                try:
-                    page.wait_for_selector(
-                        DubuSelectors.Login.MUNICIPALITY_SELECT, timeout=5000
-                    )
-                except Exception:
-                    # If neither selector is found, we'll handle it in the conditional logic below
-                    pass
-
-            # Check if the loginfmt input box is present
-            if page.query_selector(DubuSelectors.Login.USERNAME) is not None:
-                # Enter email into loginfmt
-                page.fill(DubuSelectors.Login.USERNAME, self._username)
-                page.click(DubuSelectors.Login.SUBMIT_BUTTON)
-            elif (
-                page.query_selector(DubuSelectors.Login.MUNICIPALITY_SELECT) is not None
-            ):
                 page.select_option(
-                    DubuSelectors.Login.MUNICIPALITY_SELECT,
-                    label=self._username,
+                    DubuSelectors.Login.MUNICIPALITY_SELECT, self._idp
                 )
                 page.click(DubuSelectors.Login.OK_BUTTON)
-            else:
-                raise ValueError(
-                    "Login selectors not found, unable to proceed with login"
-                )
+            except Exception:
+                self.logger.debug("Skipping municipality select")
 
+            try:
+                page.wait_for_selector(DubuSelectors.USERNAME,timeout=5000)
+                page.fill(DubuSelectors.Login.USERNAME, self._username)
+                page.click(DubuSelectors.Login.SUBMIT_BUTTON)
+            except Exception:
+                self.logger.debug("Skipping username select")
+
+            # If this doesn't work we want a crash.
             page.wait_for_selector(DubuSelectors.Main.LOGO, timeout=10000)
 
             # Get all cookies

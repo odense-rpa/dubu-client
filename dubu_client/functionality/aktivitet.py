@@ -8,4 +8,6 @@ class AktivitetClient:
         endpoint = f"/odata/Aktivitet/Default.GetBySag(Id={sags_id})"
         response = self.client.get(endpoint)
         return response.json() if response.status_code == 200 else None
-        
+    
+    def opret_aktivitet(self, sags_id: int, type: str, undertype: str, beskrivelse: str,status: str="Aktiv", notat: str=""):
+        pass
