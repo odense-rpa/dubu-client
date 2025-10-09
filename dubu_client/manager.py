@@ -12,9 +12,9 @@ class DubuClientManager:
     sager: SagClient
     dokumenter: DokumentClient
 
-    def __init__(self, username: str, idp: str) -> None:
+    def __init__(self, username: str, password: str, idp: str) -> None:
         # Initialize client - this will block until login completes (10-35 seconds)
-        self._client = DubuClient(username, idp)
+        self._client = DubuClient(username, password, idp)
         self.aktiviteter = AktivitetClient(dubu_client=self._client)
         self.brugere = OrgBrugerClient(dubu_client=self._client)
         self.sager = SagClient(dubu_client=self._client)

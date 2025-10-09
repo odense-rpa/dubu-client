@@ -21,6 +21,7 @@ class DubuClient:
     def __init__(
         self,
         username: str,
+        password: str,
         idp: str
     ) -> None:
         # Set up logging
@@ -33,6 +34,7 @@ class DubuClient:
         hooks = {"response": [response_hook]}
 
         self._username = username
+        self._password = password
         self._idp = idp
         self._base_url = "https://www.dubu.dk/"
         self._timeout = 30
@@ -48,7 +50,7 @@ class DubuClient:
 
     def login(self) -> None:
         with sync_playwright() as p:
-            browser = p.chromium.launch(channel="chrome", headless=True)
+            browser = p.chromium.launch(channel="chrome", headless=False)
             context = browser.new_context(
                 storage_state=None,  # No stored state (similar to incognito)
                 accept_downloads=False,
@@ -67,11 +69,19 @@ class DubuClient:
                 self.logger.debug("Skipping municipality select")
 
             try:
-                page.wait_for_selector(DubuSelectors.USERNAME,timeout=5000)
+                page.wait_for_selector(DubuSelectors.Login.USERNAME,timeout=5000)
                 page.fill(DubuSelectors.Login.USERNAME, self._username)
                 page.click(DubuSelectors.Login.SUBMIT_BUTTON)
             except Exception:
                 self.logger.debug("Skipping username select")
+
+            # Filling in the password works, but on an external network triggers a "verify account". TODO: Test on internal ODK network
+            try:
+                page.wait_for_selector(DubuSelectors.Login.PASSWORD,timeout=5000)
+                page.fill(DubuSelectors.Login.PASSWORD,self._password)
+                page.click(DubuSelectors.Login.SUBMIT_BUTTON)
+            except Exception:
+                self.logger.debug("Skipping password entry")
 
             # If this doesn't work we want a crash.
             page.wait_for_selector(DubuSelectors.Main.LOGO, timeout=10000)

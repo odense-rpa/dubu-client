@@ -4,6 +4,9 @@ class DubuSelectors:
         OK_BUTTON = 'input[type="button"][value="OK"]'
         SUBMIT_BUTTON = 'input[type="submit"]'
         USERNAME = 'input[name="loginfmt"]'
+        PASSWORD = 'input[name="passwd"]'
+
+
 
     class Main:
         LOGO = 'div.titlebar__logotext'
