@@ -1,11 +1,10 @@
-import pytest
-import os
 
+from dubu_client import DubuClientManager
 
 def test_upload_dokument(dubu_manager: DubuClientManager):
 
-    aktivitet_client = AktivitetClient(client)
-    dokument_client = DokumentClient(client)
+    aktivitet_client = dubu_manager.aktiviteter
+    dokument_client = dubu_manager.dokumenter
 
     odata = aktivitet_client.hent_aktiviter_for_sag(606094)
     assert odata is not None, "Kunne ikke hente aktiviteter for sag"
