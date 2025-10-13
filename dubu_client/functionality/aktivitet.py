@@ -4,9 +4,16 @@ class AktivitetClient:
     def __init__(self, dubu_client: DubuClient) -> None:
         self.client = dubu_client
 
-    def hent_aktiviter_for_sag(self, sags_id: int) -> list[dict]|None:
+    def hent_aktiviter_for_sag(self, sags_id: int) -> list[dict]:
+        """Henter aktiviteter for en given sag ID."""
         endpoint = f"/odata/Aktivitet/Default.GetBySag(Id={sags_id})"
         response = self.client.get(endpoint)
+
+        response.raise_for_status()
+        data = response.json()
+
+        return data.get('value', []) 
+
         return response.json() if response.status_code == 200 else None
     
     def opret_aktivitet(self, sags_id: int, type: str, undertype: str, beskrivelse: str,status: str="Aktiv", notat: str=""):

@@ -6,13 +6,10 @@ def test_upload_dokument(dubu_manager: DubuClientManager):
     aktivitet_client = dubu_manager.aktiviteter
     dokument_client = dubu_manager.dokumenter
 
-    odata = aktivitet_client.hent_aktiviter_for_sag(606094)
-    assert odata is not None, "Kunne ikke hente aktiviteter for sag"
-
-    aktiviteter = odata.get('value', []) if odata else []
-
+    aktiviteter = aktivitet_client.hent_aktiviter_for_sag(606094)
+    
     aktiviteter_filtered = [a for a in aktiviteter if a.get('beskrivelse') == "Asd"]
-    assert aktiviteter_filtered, "Ingen aktiviteter med beskrivelse 'Asd' funnet"
+    assert aktiviteter_filtered, "Ingen aktiviteter med beskrivelse 'Asd' fundet"
 
     # Read the test_upload.txt file from the project root as bytes
     with open("test_upload.txt", "rb") as f:
