@@ -7,9 +7,9 @@ from dubu_client import DubuClientManager
 @pytest.fixture(scope="session")
 def dubu_manager() -> DubuClientManager:
     """Fixture that provides a logged-in DubuClient for tests."""
-    login = os.getenv("DUBU_USER")
-    password = os.getenv("DUBU_PASSWORD")
-    idp = os.getenv("DUBU_IDP")
+    login = os.getenv("DUBU_USER") or ""
+    password = os.getenv("DUBU_PASSWORD") or ""
+    idp = os.getenv("DUBU_IDP") or ""
 
     assert login
 
