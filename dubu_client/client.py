@@ -50,7 +50,7 @@ class DubuClient:
 
     def login(self) -> None:
         with sync_playwright() as p:
-            browser = p.chromium.launch(channel="chrome", headless=False)
+            browser = p.chromium.launch(channel="chrome", headless=True)
             context = browser.new_context(
                 storage_state=None,  # No stored state (similar to incognito)
                 accept_downloads=False,
