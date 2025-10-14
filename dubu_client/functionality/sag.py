@@ -111,3 +111,21 @@ class SagClient:
         response = self.client.get(endpoint)
         return response.json()
     
+    def rediger_sag(self, sag:dict) -> Optional[dict]:
+        """
+        Rediger en eksisterende sag.
+        
+        Args:
+            sag: Dict med sag data (skal indeholde 'id' felt)
+            
+        Returns:
+            Opdateret sag som dict eller None hvis opdatering fejler
+        """
+        sags_id = sag["id"]
+        if not sags_id:
+            raise ValueError("Sag dict must contain 'id' field")
+        
+        endpoint = f"api/sager/{sags_id}"
+        response = self.client.patch(endpoint, json=sag)
+        return response.json() if response.status_code == 200 else None
+    

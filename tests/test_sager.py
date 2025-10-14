@@ -48,5 +48,25 @@ def test_hent_sag(dubu_manager: DubuClientManager):
     assert isinstance(result, dict), "Result should be a dictionary"
     assert result['id'] == 606094, "Retrieved sag ID does not match"
 
+def test_rediger_sag(dubu_manager: DubuClientManager):
+
+    # First, fetch the existing sag to get its current data
+    sag = dubu_manager.sager.hent_sag(606094)
+    assert sag is not None, "Failed to retrieve sag for editing"
+
+    bemærkning = sag["beskrivelse"]
+    bemærkning = bemærkning + " - opdateret test"
+    sag["beskrivelse"] = bemærkning
+
+    titel = sag["titel"]
+    sag["titel"] = "Test testesen"
+
+    # Send the update request
+    result = dubu_manager.sager.rediger_sag(sag)
+
+    assert result is not None, "Failed to edit sag"
+    assert result['titel'] == "Test testesen"
+    assert result['beskrivelse'] == bemærkning
+
 
 

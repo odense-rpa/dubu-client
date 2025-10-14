@@ -149,6 +149,20 @@ class DubuClient:
         response.raise_for_status()
         return response
 
+    def patch(self, endpoint: str, json: dict | None = None, **kwargs) -> httpx.Response:
+        """
+        Perform PATCH request to the specified endpoint.
+
+        :param endpoint: API endpoint (relative or absolute URL)
+        :param json: JSON data to send in request body
+        :param kwargs: Additional arguments passed to httpx
+        :return: HTTP response
+        """
+        url = self._normalize_url(endpoint)
+        response = self._client.patch(url, json=json, **kwargs)
+        response.raise_for_status()
+        return response
+
     def delete(self, endpoint: str, **kwargs) -> httpx.Response:
         """
         Perform DELETE request to the specified endpoint.
@@ -161,3 +175,5 @@ class DubuClient:
         response = self._client.delete(url, **kwargs)
         response.raise_for_status()
         return response
+    
+
