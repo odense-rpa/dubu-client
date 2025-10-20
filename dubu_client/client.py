@@ -84,7 +84,7 @@ class DubuClient:
                 self.logger.debug("Skipping password entry")
 
             # If this doesn't work we want a crash.
-            page.wait_for_selector(DubuSelectors.Main.LOGO, timeout=10000)
+            page.wait_for_selector(DubuSelectors.Main.LOGO, timeout=30000)
 
             # Get all cookies
             cookie_names = ["oiosamlSession", "oiosamlCookie"]
