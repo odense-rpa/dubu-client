@@ -27,7 +27,7 @@ def test_soeg_sager(dubu_manager: DubuClientManager):
     assert len(result['value']) == 1, "There should be exactly one sag in the search results"
     
     # Check that the sag contains the expected sagsnavn
-    assert result['value'][0]['titel'] == "Test Testesen"
+    assert result['value'][0]['titel'] == "Test testesen"
 
 def test_soeg_sager_sammenhaengende_borger_forloeb(dubu_manager: DubuClientManager):
 
