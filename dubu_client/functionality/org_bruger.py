@@ -55,8 +55,16 @@ class OrgBrugerClient:
         response = self.client.get(endpoint)
         return response.json()
     
-    def soeg_modtager_bruger(self, modtager_fulde_navn) -> list[dict]:
-        url_encoded_navn = urlencode({'term': modtager_fulde_navn}, safe='(),/$;=').replace('+', '%20')
+    def soeg_modtager_bruger(self, søge_term, initialer) -> dict|None:
+        url_encoded_navn = urlencode({'term': søge_term}, safe='(),/$;=').replace('+', '%20')
         endpoint = f"api/organisation/bruger/suggested?{url_encoded_navn}"
         response = self.client.get(endpoint)
-        return response.json()
+        
+        resultater = response.json()
+
+        bruger = next(
+            (bruger for bruger in resultater if initialer in bruger.get('orgBruger').get('adresse').get('emailAdresse', '')),
+            None
+        )
+
+        return bruger

@@ -3,8 +3,10 @@ import pytest
 from dubu_client import DubuClientManager
 
 def test_opret_advisering(dubu_manager: DubuClientManager):
-    modtager = dubu_manager.brugere.soeg_modtager_bruger("Christian de Laurent Drachmann")[0]
-    sag = dubu_manager._client.get("api/sager/606094").json()       
+    modtager = dubu_manager.brugere.soeg_modtager_bruger("Christian de Laurent Drachmann", "cdld")
+    assert modtager is not None, "Failed to find modtager with given name and initialer"
+
+    sag = dubu_manager._client.get("api/sager/606094").json()
 
     try:
         dubu_manager.advisering.opret_advisering(

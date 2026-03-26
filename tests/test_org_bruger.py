@@ -17,7 +17,9 @@ def test_soeg_org_bruger(dubu_manager: DubuClientManager):
         assert 'fuldeNavn' in bruger, "Bruger should have a fuldeNavn field"
 
 def test_soeg_modtager_bruger(dubu_manager: DubuClientManager):
-    result = dubu_manager.brugere.soeg_modtager_bruger("Christian de Laurent Drachmann")
+    result = dubu_manager.brugere.soeg_modtager_bruger("Christian de Laurent Drachmann", "cdld")
     
-    assert isinstance(result, list), "Result should be a list"
-    assert len(result) > 0, "No users found with the given name"    
+    assert isinstance(result, dict) or result is None, "Result should be a dictionary or None"
+    if result:
+        assert 'email' in result, "Bruger should have an email field"
+        assert 'fuldeNavn' in result, "Bruger should have a fuldeNavn field"
