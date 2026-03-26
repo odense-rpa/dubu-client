@@ -6,6 +6,22 @@ class OrgBrugerClient:
     def __init__(self, dubu_client: DubuClient) -> None:
         self.client = dubu_client
 
+    def _build_query_endpoint(self, base_endpoint: str, query_params: dict) -> str:
+        """
+        Build endpoint with properly encoded query parameters.
+        
+        Args:
+            base_endpoint: The base endpoint name
+            query_params: Dictionary of query parameters
+            
+        Returns:
+            Complete endpoint with encoded query string
+        """
+        query_string = urlencode(query_params, safe='(),/$;=')
+        # Replace + with %20 for space encoding to match expected format
+        query_string = query_string.replace('+', '%20')
+        return f"{base_endpoint}?{query_string}"
+
     def hent_org_bruger(self, org_bruger_id: int) -> Optional[dict]:
         """
         Hent information om primaer behandler baseret på ID.
@@ -19,3 +35,28 @@ class OrgBrugerClient:
         endpoint = f"api/administration/bruger/orgBruger//{org_bruger_id}"
         response = self.client.get(endpoint)
         return response.json() if response.status_code == 200 else None
+    
+    def soeg_org_bruger(self, initialer: str, top=1, skip=0) -> list[dict]:
+        query_params = {
+            '$format': 'application/json;odata.metadata=none',
+            '$top': str(top),
+            '$skip': str(skip),
+            '$select': 'email,telefon,gyldigTil,fuldeNavn,brugernavn,mobiltelefon,medlemsskaber,id',
+            '$orderby': 'fuldeNavn asc',
+            '$filter': f"startswith(email,'{initialer}')",
+            '$count': 'true'
+        }
+        
+        endpoint = self._build_query_endpoint(
+            "odata/OrgBruger/Default.GetByKommune",
+            query_params
+        )
+        
+        response = self.client.get(endpoint)
+        return response.json()
+    
+    def soeg_modtager_bruger(self, modtager_fulde_navn) -> list[dict]:
+        url_encoded_navn = urlencode({'term': modtager_fulde_navn}, safe='(),/$;=').replace('+', '%20')
+        endpoint = f"api/organisation/bruger/suggested?{url_encoded_navn}"
+        response = self.client.get(endpoint)
+        return response.json()

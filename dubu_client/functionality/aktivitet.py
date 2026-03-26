@@ -2,9 +2,7 @@ import json
 
 from datetime import datetime
 from datetime import timezone
-
 from dubu_client.client import DubuClient
-
 from .skabeloner import _opret_aktivitet
 
 

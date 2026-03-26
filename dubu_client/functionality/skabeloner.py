@@ -1,3 +1,13 @@
+_opret_advisering = """{
+  "adviseringsType": {},
+  "sagReference": {},
+  "ansvar": {},
+  "ydelseId": null,
+  "titel": "",
+  "beskrivelse": "",
+  "modtager": {}
+}"""
+
 _opret_aktivitet = """{
   "aktindsigt": true,
   "laast": false,
