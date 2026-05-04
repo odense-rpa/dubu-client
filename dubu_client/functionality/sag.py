@@ -103,7 +103,7 @@ class SagClient:
             '$select': 'tvang,titel,status,sagstype,id,isSensitive,sagsnummer,sekundaerBehandlerNavne',
             '$expand': 'primaerPerson($select=alder,cprnr,fornavn,mellemnavn,efternavn,id,organisationsnavn,fuldeNavn,navn),primaerBehandler,foerstkommendeFrist($select=fristDato,id)',
             '$orderby': 'id desc',
-            '$filter': "((afdeling/orgEnhedId eq 365449 or afdeling/orgEnhedId eq 366029 or afdeling/orgEnhedId eq 365726 or afdeling/orgEnhedId eq 365464) and (status/brugervendtNoegle eq 'SagStatus1'))",
+            '$filter': "((afdeling/orgEnhedId eq 365449 or afdeling/orgEnhedId eq 366029 or afdeling/orgEnhedId eq 365726 or afdeling/orgEnhedId eq 365464 or afdeling/orgEnhedId eq 381584 or afdeling/orgEnhedId eq 365482) and (status/brugervendtNoegle eq 'SagStatus1'))",
             '$count': 'true'
         }
 
