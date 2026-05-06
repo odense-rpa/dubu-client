@@ -1,4 +1,5 @@
 import json
+import time
 
 from datetime import datetime
 from datetime import timezone
@@ -125,6 +126,9 @@ class AktivitetClient:
 
         # Response is an int in a string
         aktivitet_id = int(response.text.strip('"'))
+
+        # Give backend persistence a moment before fetching the new activity.
+        time.sleep(2)
 
         aktivitet_response = self.client.get(f"/api/aktiviteter/{aktivitet_id}")
         aktivitet_response.raise_for_status()
