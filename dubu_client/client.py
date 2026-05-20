@@ -1,10 +1,21 @@
 import httpx
 import logging
+import ssl
 
+from pathlib import Path
 from urllib.parse import urljoin
 from playwright.sync_api import sync_playwright
 from .hooks import create_response_logging_hook
 from .selectors import DubuSelectors
+
+_CERTS_DIR = Path(__file__).parent / "certs"
+
+
+def _build_ssl_context() -> ssl.SSLContext:
+    # www.dubu.dk only sends the leaf cert; supply the missing GlobalSign intermediate.
+    ctx = ssl.create_default_context()
+    ctx.load_verify_locations(cafile=_CERTS_DIR / "gsrsaovsslca2018.pem")
+    return ctx
 
 
 class DubuClient:
@@ -41,6 +52,7 @@ class DubuClient:
         self._client = httpx.Client(
             timeout=self._timeout,
             event_hooks=hooks,
+            verify=_build_ssl_context(),
             headers={
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                 "Accept": "application/json, text/plain, */*",
