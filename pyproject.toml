@@ -11,3 +11,6 @@ dependencies = [
     "pytest>=8.4.1",
     "requests>=2.32.4",
 ]
+
+[tool.setuptools.package-data]
+dubu_client = ["certs/*.pem"]
